@@ -27,6 +27,8 @@ show_help() {
     echo "  clean       - Stop and remove all containers"
     echo "  backup-db   - Backup MongoDB data"
     echo "  health      - Check service health"
+    echo "  mongo       - Open MongoDB shell"
+    echo "  mongo-ui    - Show Mongo Express URL"
     echo ""
 }
 

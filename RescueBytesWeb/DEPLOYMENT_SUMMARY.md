@@ -2,7 +2,7 @@
 
 ## What I've Configured
 
-Your RescueBytes project is now **100% ready for AWS deployment** with a complete Docker Compose setup that includes:
+Your RescueBytes project is now **100% ready for AWS deployment** with a complete Docker Compose setup that includes **everything in containers**:
 
 ### ✅ Services Configured
 
@@ -21,11 +21,22 @@ Your RescueBytes project is now **100% ready for AWS deployment** with a complet
    - Health endpoint: `/health`
    - Auto-restart on failure
 
-3. **MongoDB** (Optional Local or Atlas)
-   - Can use local MongoDB in Docker
-   - Or MongoDB Atlas (recommended)
-   - Persistent data volumes
+3. **MongoDB Container** (Database)
+   - Runs on port 27017
+   - Persistent data storage (Docker volume)
+   - No external database needed!
    - Health checks enabled
+   - Auto-restart on failure
+
+### 🎉 Key Advantage: Everything in Docker!
+
+**No external services required!** MongoDB runs in a Docker container alongside your app:
+- ✅ No MongoDB Atlas account needed
+- ✅ No cloud database setup
+- ✅ No connection string configuration
+- ✅ Faster (no network latency)
+- ✅ Free (no database costs)
+- ✅ Simple backup (just backup Docker volume)
 
 ### 📁 Files Created/Updated
 
@@ -59,10 +70,10 @@ RescueBytesWeb/
 git clone https://github.com/jenjose72/RescueBytes.git
 cd RescueBytes/RescueBytesWeb
 
-# 2. Configure environment
+# 2. Configure environment (only need Gemini API key!)
 cd backend
 cp .env.example .env
-nano .env  # Add your MongoDB URI, Gemini API key, etc.
+nano .env  # Add your Gemini API key and EC2 IP
 
 # 3. Deploy!
 cd ..
@@ -71,6 +82,8 @@ chmod +x deploy.sh
 ```
 
 **That's it!** Your app will be live at `http://YOUR_EC2_IP`
+
+MongoDB runs automatically in Docker - no external database setup needed!
 
 ---
 
@@ -112,14 +125,18 @@ AWS EC2 Instance (YOUR_EC2_IP)
    │    │  - Authentication                │  │
    │    └──────────────┬───────────────────┘  │
    │                   │                       │
-   └───────────────────┼───────────────────────┘
-                       │
-                       ▼
-              MongoDB Atlas (Cloud)
-              - User data
-              - SOS alerts
-              - Inventory
-              - News, etc.
+   ├─── Port 27017 ────┼───────────────────────┤
+   │                   │                       │
+   │    ┌──────────────▼───────────────────┐  │
+   │    │  MongoDB Container               │  │
+   │    │  - Database storage              │  │
+   │    │  - Persistent volume             │  │
+   │    └──────────────────────────────────┘  │
+   │                                           │
+   └───────────────────────────────────────────┘
+
+All containers connected via Docker network
+Data persists in Docker volume: mongo-data
 ```
 
 ---
@@ -158,8 +175,8 @@ cd ~/RescueBytes/RescueBytesWeb
 Create `backend/.env` with:
 
 ```env
-# MongoDB (use Atlas connection string)
-MONGO_DB_URI=mongodb+srv://user:pass@cluster.mongodb.net/rescuebytes
+# MongoDB (automatically connects to Docker container)
+MONGO_DB_URI=mongodb://mongo:27017/rescuebytes
 
 # Gemini AI (get from https://makersuite.google.com/app/apikey)
 GEMINI_API_KEY=your_gemini_api_key
@@ -172,6 +189,12 @@ NODE_ENV=production
 CORS_ORIGIN=http://YOUR_EC2_IP
 PORT=3000
 ```
+
+**That's it!** Only 2 things to configure:
+1. Your Gemini API key
+2. Your EC2 IP address
+
+MongoDB connection is automatic!
 
 ---
 
@@ -212,8 +235,8 @@ PORT=3000
 - **Cost**: ~$30/month
 
 ### Database
-- **MongoDB Atlas M0**: Free (512MB)
-- **MongoDB Atlas M10**: $57/month (10GB)
+- **MongoDB in Docker**: Free (included)
+- **Storage**: Uses EC2 disk space
 
 ---
 
@@ -223,12 +246,11 @@ Before deploying, ensure you have:
 
 - [ ] AWS EC2 instance running Ubuntu 22.04
 - [ ] Security group allows ports: 22, 80, 443, 3000
-- [ ] MongoDB Atlas cluster created
-- [ ] MongoDB user created with password
-- [ ] MongoDB Network Access allows 0.0.0.0/0
 - [ ] Gemini API key obtained
 - [ ] SSH access to EC2 instance
 - [ ] Docker and Docker Compose installed on EC2
+
+**That's it!** No MongoDB setup needed - it runs in Docker automatically!
 
 ---
 
