@@ -73,10 +73,10 @@ const allowedOrigins = [
   
 app.use(
   cors({
-    origin:"http://localhost:5173" , // This allows all origins
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
-    credentials: true, // Allow credentials if needed
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
   })
 );
 // Routes
@@ -113,6 +113,15 @@ app.get('/getUserReq',getUserReq);
 app.get('/getUserReqbyId/:userId',getUserReqbyId);
 app.get('/getAlerts',getAlerts);
 app.post('/getLatestAlerts',getLatestAlerts);
+// Health check endpoint for Docker
+app.get("/health", (req, res) => {
+  res.status(200).json({ 
+    status: "healthy", 
+    timestamp: new Date().toISOString(),
+    service: "rescuebytes-backend"
+  });
+});
+
 app.get("/auth/check", (req, res) => {
   if (req.cookies.session_token) {
     return res.json({ authenticated: true });
