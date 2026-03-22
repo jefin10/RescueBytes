@@ -162,6 +162,34 @@ case "$1" in
         echo "  Backend:  http://$PUBLIC_IP:3000"
         ;;
     
+    mongo)
+        check_docker
+        echo -e "${GREEN}Opening MongoDB shell...${NC}"
+        echo "Type 'exit' to quit"
+        echo ""
+        docker-compose exec mongo mongosh rescuebytes
+        ;;
+    
+    mongo-ui)
+        check_docker
+        PUBLIC_IP=$(get_public_ip)
+        
+        echo -e "${GREEN}MongoDB Admin Interface (Mongo Express)${NC}"
+        echo ""
+        echo "URL: http://$PUBLIC_IP:8081"
+        echo ""
+        echo "Login Credentials:"
+        echo "  Username: admin"
+        echo "  Password: admin123"
+        echo ""
+        echo "Make sure port 8081 is open in your AWS Security Group!"
+        echo ""
+        echo "To change password, edit docker-compose.yml:"
+        echo "  ME_CONFIG_BASICAUTH_USERNAME"
+        echo "  ME_CONFIG_BASICAUTH_PASSWORD"
+        echo ""
+        ;;
+    
     *)
         show_help
         ;;
