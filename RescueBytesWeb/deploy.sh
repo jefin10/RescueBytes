@@ -54,27 +54,6 @@ fi
 echo -e "${GREEN}✓${NC} Docker Compose is installed"
 echo ""
 
-# Ask user about MongoDB
-echo -e "${YELLOW}MongoDB Configuration:${NC}"
-echo "Are you using MongoDB Atlas? (y/n)"
-read -r use_atlas
-
-if [ "$use_atlas" = "y" ] || [ "$use_atlas" = "Y" ]; then
-    echo -e "${GREEN}✓${NC} Using MongoDB Atlas"
-    echo -e "${YELLOW}⚠${NC}  Make sure MONGO_DB_URI in backend/.env points to Atlas"
-    echo ""
-    
-    # Comment out mongo service in docker-compose
-    if grep -q "^  mongo:" docker-compose.yml; then
-        echo "Disabling local MongoDB service in docker-compose.yml..."
-        sed -i '/^  mongo:/,/^$/s/^/#/' docker-compose.yml
-        echo -e "${GREEN}✓${NC} Local MongoDB disabled"
-    fi
-else
-    echo -e "${GREEN}✓${NC} Using local MongoDB (Docker)"
-    echo ""
-fi
-
 # Stop existing containers
 echo "Stopping existing containers..."
 docker-compose down 2>/dev/null || true
