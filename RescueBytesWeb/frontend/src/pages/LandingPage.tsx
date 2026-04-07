@@ -36,7 +36,7 @@ const LandingPage = () => {
                 <div
                   className="flex items-center justify-center w-full px-8 py-3 text-base font-medium text-white bg-blue-700 border border-transparent rounded-md hover:bg-blue-800 md:py-4 md:text-lg md:px-10"
                 >
-                  <a href='https://drive.google.com/drive/folders/1rzzaI72D4350NRD7UVCWjCnDsdG2XL7r?usp=sharing'>Download App</a>
+                  <a href='https://github.com/jefin10/RescueBytes/releases/latest/download/app.apk'>Download App</a>
                 </div>
               </div>
             </div>
