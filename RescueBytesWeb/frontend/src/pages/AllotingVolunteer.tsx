@@ -1,6 +1,6 @@
 import Navbar from '../components/Navbar';
 import { useState, useEffect } from 'react';
-import api_url from '../api.js';
+import api_url from '../api.tsx';
 
 interface Volunteer {
   id: string;

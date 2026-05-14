@@ -137,13 +137,21 @@ const Navbar = () => {
               >
                 SOS Map
               </div>
-              <div 
-                onClick={() => navigate('/warnings')} 
+              <div
+                onClick={() => navigate('/warnings')}
                 className={`px-1 pt-1 text-sm font-medium border-b-2 cursor-pointer ${
                   isActive('/warnings') ? 'border-white' : 'border-transparent hover:border-gray-300'
                 }`}
               >
                 Alerts
+              </div>
+              <div
+                onClick={() => navigate('/danger-zones')}
+                className={`px-1 pt-1 text-sm font-medium border-b-2 cursor-pointer ${
+                  isActive('/danger-zones') ? 'border-white' : 'border-transparent hover:border-gray-300'
+                }`}
+              >
+                Danger Zones
               </div>
             </div>
           </div>

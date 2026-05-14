@@ -10,6 +10,7 @@ import Logi from "./pages/Logi";
 import ManageInventory from "./pages/ManageInventory";
 import  Register  from "./pages/Register";
 import CommunityReq from "./pages/CommunityReq";
+import DangerZones from "./pages/DangerZones";
 
 
 const App = () => {
@@ -27,7 +28,8 @@ const App = () => {
           <Route path="/login" element={<Logi/>} />
           <Route path='/ManageInventory' element={<ManageInventory />} />
           <Route path='/register' element={<Register />} />
-          <Route path='/communityReports' element={<CommunityReq/>}></Route>
+          <Route path='/communityReports' element={<CommunityReq/>} />
+          <Route path='/danger-zones' element={<DangerZones />} />
         </Routes>
       </div>
     </BrowserRouter>
