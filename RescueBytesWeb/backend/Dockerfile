@@ -1,33 +1,44 @@
-# ── Stage 1: deps ────────────────────────────────────────────────────────────
+# ── Stage 1: build the React frontend ────────────────────────────────────────
+FROM node:20-alpine AS frontend-build
+
+WORKDIR /frontend
+
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm ci
+
+COPY frontend/ .
+
+# Empty = relative URLs, served from the same origin as the backend
+ARG VITE_API_URL=""
+ENV VITE_API_URL=$VITE_API_URL
+
+RUN npm run build
+
+# ── Stage 2: backend production deps ─────────────────────────────────────────
 FROM node:20-alpine AS deps
 
 WORKDIR /app
 
-# Copy only manifest files first for better layer caching
-COPY package.json package-lock.json* ./
-
+COPY backend/package.json backend/package-lock.json* ./
 RUN npm ci --omit=dev
 
-# ── Stage 2: runtime ─────────────────────────────────────────────────────────
+# ── Stage 3: runtime ─────────────────────────────────────────────────────────
 FROM node:20-alpine AS runtime
 
-# Create a non-root user for security
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 WORKDIR /app
 
-# Copy production dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
+COPY backend/ .
 
-# Copy application source
-COPY . .
+# server.js checks for frontend/dist and serves it statically
+COPY --from=frontend-build /frontend/dist ./frontend/dist
 
-# Drop privileges
 USER appuser
 
 EXPOSE 3000
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
   CMD wget -qO- http://localhost:3000/health || exit 1
 

@@ -3,3 +3,4 @@
 
 # Ignore ALL .env files recursively
 **/.env
+.claude

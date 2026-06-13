@@ -128,15 +128,16 @@ const Home = () => {
   // Updated emergency services array with handler for volunteer
   const emergencyServices = [
     { id: 1, title: 'Request Items', icon: 'hand-heart', route: '/ros', color: '#2ecc71' },
-    { 
-      id: 2, 
-      title: 'Volunteer', 
-      icon: 'account-group', 
+    {
+      id: 2,
+      title: 'Volunteer',
+      icon: 'account-group',
       color: '#1abc9c',
       handler: handleVolunteerNavigation
     },
     { id: 3, title: 'SOS', icon: 'alert-octagon', route: '/SOS', color: '#e74c3c' },
-    { id: 4, title: 'Report', icon: 'file-document-outline', route: '/crowd', color: '#34495e' }
+    { id: 4, title: 'Report', icon: 'file-document-outline', route: '/crowd', color: '#34495e' },
+    { id: 5, title: 'Safe Route', icon: 'map-marker-path', route: '/SafeNav', color: '#2563eb' },
   ];
   
   const [weatherData, setWeatherData] = useState(null);

@@ -1,188 +1,111 @@
 import { useEffect, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import api_url from "../api.tsx";
+import earthBg from "../assets/earth-landing.jpg";
 
 const Logi = () => {
-  const [email, setEmail] = useState("kottayam@email.com");
-  const [password, setPassword] = useState("12345678");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
-
   const navigate = useNavigate();
 
-  // Redirect to home if session_token already exists
   useEffect(() => {
-    const token = Cookies.get("session_token");
-    console.log("Token from cookie:", token);
-    if (token) {
-      console.log("Navigating to /home...");
-      navigate("/home", { replace: true });
-      console.log("After navigate"); // May or may not run depending on the implementation
-    }
+    if (Cookies.get("session_token")) navigate("/home", { replace: true });
   }, [navigate]);
-  
-  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
-
+    setError("");
     try {
       const response = await fetch(`${api_url}/auth/login`, {
         method: "POST",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
-      }
-
-      // Save token in cookies
-      if (rememberMe) {
-        Cookies.set("session_token", data.token, { expires: 7 });
-      } else {
-        Cookies.set("session_token", data.token);
-      }
-
-      navigate("/home"); // Redirect to home page
-    } catch (error: unknown) {
-      console.error("Login error:", error);
-      setError(error instanceof Error ? error.message : "An unknown error occurred");
+      if (!response.ok) throw new Error(data.message || "Login failed");
+      Cookies.set("session_token", data.token);
+      navigate("/home");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
     }
   };
 
   return (
-    <div className="flex flex-col justify-center min-h-screen py-12 bg-gray-50 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <div className="flex items-center justify-center w-12 h-12 bg-white  rounded-full">
-            <img src='./RESCUE (3).png' alt="Logo" width={150} height={100} className="w-8 h-8" />
-            
-          </div>
+    <div
+      className="relative min-h-screen flex flex-col items-center justify-center px-4"
+      style={{ backgroundImage: `url(${earthBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+    >
+      <div className="absolute inset-0 bg-black/55" />
+
+      <div className="relative z-10 w-full max-w-sm">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <img src="./rescuebytes-logo.png" alt="RescueBytes" className="w-10 h-10 mx-auto mb-3" />
+          <h1 className="text-xl font-bold text-white">RescueBytes</h1>
+          <p className="text-sm text-white/50 mt-1">Sign in to the admin dashboard</p>
         </div>
-        <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
-          RescueBytez
-        </h2>
-        <p className="mt-2 text-sm text-center text-gray-600">
-          Sign in to access the disaster management platform
-        </p>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-          {error && <p className="text-sm text-center text-red-500">{error}</p>}
+        {/* Card */}
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-lg px-8 py-8">
+          {error && <p className="text-xs text-red-300 text-center mb-4">{error}</p>}
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="kottayam@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
+              <label className="block text-xs font-medium text-white/70 mb-1">Email</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3 py-2 text-sm bg-white/10 border border-white/25 rounded text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-white/50 focus:border-white/50"
+                placeholder="admin@example.com"
+              />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="relative mt-1">
+              <label className="block text-xs font-medium text-white/70 mb-1">Password</label>
+              <div className="relative">
                 <input
-                  id="password"
-                  name="password"
                   type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
                   required
-                  className="block w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="12345678"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-3 py-2 text-sm bg-white/10 border border-white/25 rounded text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-white/50 focus:border-white/50 pr-10"
+                  placeholder="••••••••"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-3"
                   onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-3 text-xs text-white/50 hover:text-white/80"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
+                  {showPassword ? 'Hide' : 'Show'}
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  checked={rememberMe}
-                  onChange={() => setRememberMe(!rememberMe)}
-                />
-                <label htmlFor="remember-me" className="block ml-2 text-sm text-gray-900">
-                  Remember me
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                  Forgot your password?
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-800 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Sign in
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="w-full py-2.5 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition-colors mt-2"
+            >
+              Sign in
+            </button>
           </form>
 
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 text-gray-500 bg-white">Don't have an account?</span>
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <a
-                href="#"
-                className="flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Register your community
-              </a>
-            </div>
+          <div className="mt-6 text-center">
+            <p className="text-xs text-white/40">Don't have an account?</p>
+            <button
+              onClick={() => navigate('/register')}
+              className="mt-2 w-full py-2 text-xs text-white/70 border border-white/20 rounded hover:bg-white/10 transition-colors"
+            >
+              Register your community
+            </button>
           </div>
         </div>
-      </div>
 
-      <div className="mt-6 text-sm text-center text-gray-500">
-        <p>© 2025 RescueBytez. All rights reserved.</p>
       </div>
     </div>
   );

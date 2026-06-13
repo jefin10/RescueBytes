@@ -32,6 +32,7 @@ export default function RootLayout() {
           <Stack.Screen name="index" />
           <Stack.Screen name="explore" />
           <Stack.Screen name="register" />
+          <Stack.Screen name="SafeNav" />
         </Stack>
         <StatusBar style="auto" />
       </>

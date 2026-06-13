@@ -11,7 +11,7 @@ import ManageInventory from "./pages/ManageInventory";
 import  Register  from "./pages/Register";
 import CommunityReq from "./pages/CommunityReq";
 import DangerZones from "./pages/DangerZones";
-
+import Features from "./pages/Features";
 
 const App = () => {
   return (
@@ -30,6 +30,7 @@ const App = () => {
           <Route path='/register' element={<Register />} />
           <Route path='/communityReports' element={<CommunityReq/>} />
           <Route path='/danger-zones' element={<DangerZones />} />
+          <Route path='/features' element={<Features />} />
         </Routes>
       </div>
     </BrowserRouter>

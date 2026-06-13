@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { API_URL } from './api';
 import { getData } from './storage';
 import { STORAGE_KEYS } from './storage';
 
 const api = axios.create({
-  baseURL: 'https://rbbackend-hlah.onrender.com',
+  baseURL: API_URL,
   timeout: 10000,
 });
 

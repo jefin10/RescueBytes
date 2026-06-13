@@ -28,6 +28,9 @@ import User from './models/user.model.js';
 //import RescueCenter from './models/rescueCenter.model.js';
 import {getRescueCenterId} from './controllers/AuthController.js';
 import deleteAlert from './routes/deleteAlert.js';
+import dangerZoneRoutes from './routes/dangerZoneRoutes.js';
+import safeRouteRoutes from './routes/safeRouteRoutes.js';
+import geoRoutes from './routes/geoRoutes.js';
 import { addCommunity } from './routes/addCommunity.js';
 import getUserReqbyId from './routes/getUserReqbyId.js';
 import { getLatestAlerts } from './routes/getlatestAlerts.js';
@@ -37,6 +40,7 @@ import {addComReport,approveComReq,comReportsRejected,getComReportsAdmin,getComR
 import {getVolunteers,addVolunteerMessage,getVolunteerMessagesById} from './routes/getVolunteers.js';
 import getStats from './routes/getStatistics.js';
 import path from 'path';
+import fs from 'fs';
 import bcrypt from 'bcryptjs';
 import deleteSOS from './routes/deleteSOS.js';
 import getRCName from './routes/getRCName.js';
@@ -85,6 +89,9 @@ app.use("/auth", authRoutes); // Authentication routes
 app.use("/news", newsRoutes);
 app.use("/chat", aiRoutes);
 app.use("/sos", sosRoutes);
+app.use("/dangerZone", dangerZoneRoutes);
+app.use("/safeRoute", safeRouteRoutes);
+app.use("/geo", geoRoutes);
 app.post('/registercom', addCommunity);
 // Test Route
 
@@ -239,10 +246,13 @@ app.post("/signup", async (req, res) => {
       res.status(500).json("Server error");
     }
   });
-app.use(express.static(path.join(__dirname,"/frontend/dist")))
-app.get("*",(req,res)=>{
-  res.sendFile(path.join(__dirname,"frontend","dist","index.html"))
-})
+const frontendDist = path.join(__dirname, "frontend", "dist");
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendDist, "index.html"));
+  });
+}
 
 // Start Server only after MongoDB is connected
 connectToMongoDB().then(() => {
